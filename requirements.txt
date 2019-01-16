@@ -1,0 +1,8 @@
+numpy
+joblib
+pandas
+scipy
+sklearn
+xgboost
+lightfm
+tables
