@@ -1,3 +1,4 @@
+
 from avito_utils import *
 from sklearn.preprocessing import LabelEncoder
 import scipy.sparse as sp
@@ -16,7 +17,7 @@ import os
 os.environ['OPENBLAS_NUM_THREADS'] = '1'
 os.environ['OMP_NUM_THREADS'] = '1'
 
-
+print("starting...")
 # from https://github.com/dmitryhd/lightfm/blob/master/lightfm/inference.py#L69
 def _precompute_representation(features, feature_embeddings, feature_biases):
     representation = features.dot(feature_embeddings)
@@ -131,7 +132,7 @@ X_train = sp.coo_matrix(
     shape=(config['num_playlists'], config['num_tracks'])
 )
 
-# config['model_path'] = 'models/lightfm_model.pkl'
+#config['model_path'] = 'models/lightfm_model.pkl'
 
 val1_pids = val1_pids.astype(np.int32)
 
@@ -140,7 +141,7 @@ model = LightFM(no_components=200, loss='warp', learning_rate=0.02, max_sampled=
 print('training lightfm model')
 
 best_score = 0
-for i in range(2):
+for i in range(60):
 
     model.fit_partial(X_train, epochs=5, num_threads=50)
 
@@ -161,7 +162,7 @@ for i in range(2):
     score = np.mean(score)
     print(score)
     if score > best_score:
-        # joblib.dump(model, open(config['model_path'], 'wb'))
+#        joblib.dump(model, open(config['model_path'], 'wb'))
         model1 = model
         best_score = score
 
@@ -207,7 +208,7 @@ best_score = 0
 target_pids = target_pids.astype(np.int32)
 print('training lightfm_text model')
 
-for i in range(2):
+for i in range(10):
 
     model.fit_partial(X_train, epochs=5, num_threads=50, user_features=user_features)
 
@@ -246,6 +247,7 @@ for i in range(2):
     # joblib.dump(user_features, open('models/user_features.pkl', 'wb'))
 
 # candidate selection
+train=pd.read_hdf('df_data/train.hdf')
 val2 = pd.read_hdf('df_data/val2.hdf')
 val2_pids = joblib.load('df_data/val2_pids.pkl')
 
@@ -439,7 +441,7 @@ recs = test.groupby('pid').tid.apply(lambda x: x.values[:500])
 track_uri = tracks_info.track_uri
 
 sabmission = open('submission.csv', 'w')
-sabmission.write('team_info,main,Avito,vrubcov@hse.ru\n')
+sabmission.write('team_info,main,Aloui,aloui@eurecom.fr\n')
 
 for pid, tids in recs.items():
     sabmission.write('{}, '.format(pid) + ', '.join(track_uri.loc[tids].values) + '\n')

@@ -4,5 +4,6 @@ pandas
 scipy
 sklearn
 xgboost
-lightfm
 tables
+git+https://github.com/dmitryhd/lightfm.git
+
