@@ -1,4 +1,5 @@
 import os
+import joblib
 import json
 import numpy as np
 import pandas as pd
@@ -84,7 +85,9 @@ def create_df_data(path_set, parh_challenge_set):
     df_playlists_test.to_hdf('df_data/df_playlists_test.hdf', key='abc')
     df_playlists_test_info.to_hdf('df_data/df_playlists_test_info.hdf', key='abc')
 
-
+#model=joblib.load(open('models/lightfm_model.pkl','rb'))
+#model_text=joblib.load(open('models/lightfm_model_text.pkl','rb'))
+#user_features=joblib.load(open('models/user_features.pkl','rb'))
 def save_candidates(target_pids, df_size, file_name, df=None):
     target_pids = target_pids.astype(np.int32)
     target_pids_text = list(set(target_pids).difference(train.pid))

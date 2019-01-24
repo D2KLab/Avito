@@ -37,6 +37,9 @@ path_challenge_set = args.challenge
 create_df_data(path_data, path_challenge_set)
 np.random.seed(0)
 
+if not os.path.exists('models'):
+    os.makedirs('models')
+
 # read data
 df_tracks = pd.read_hdf('df_data/df_tracks.hdf')
 df_playlists = pd.read_hdf('df_data/df_playlists.hdf')
@@ -132,7 +135,7 @@ X_train = sp.coo_matrix(
     shape=(config['num_playlists'], config['num_tracks'])
 )
 
-#config['model_path'] = 'models/lightfm_model.pkl'
+config['model_path'] = 'models/lightfm_model.pkl'
 
 val1_pids = val1_pids.astype(np.int32)
 
@@ -162,11 +165,11 @@ for i in range(60):
     score = np.mean(score)
     print(score)
     if score > best_score:
-#        joblib.dump(model, open(config['model_path'], 'wb'))
-        model1 = model
+        joblib.dump(model, open(config['model_path'], 'wb'))
+        # model1 = model
         best_score = score
 
-model = model1
+#model = model1
 
 # lightfm_text
 
@@ -240,13 +243,18 @@ for i in range(10):
 
     print(score, score2)
     if score > best_score:
-        # joblib.dump(model, open(config['model_path'], 'wb'))
-        model_text = model
+        joblib.dump(model, open(config['model_path'], 'wb'))
+       # model_text = model
         best_score = score
 
-    # joblib.dump(user_features, open('models/user_features.pkl', 'wb'))
+    joblib.dump(user_features, open('models/user_features.pkl', 'wb'))
 
 # candidate selection
+
+model=joblib.load(open('models/lightfm_model.pkl','rb'))
+model_text=joblib.load(open('models/lightfm_model_text.pkl','rb'))
+user_features=joblib.load(open('models/user_features.pkl','rb'))
+
 train=pd.read_hdf('df_data/train.hdf')
 val2 = pd.read_hdf('df_data/val2.hdf')
 val2_pids = joblib.load('df_data/val2_pids.pkl')
